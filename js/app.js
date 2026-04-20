@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initTheme();
     renderFeed();
+    initNavigation();
     handleDynamicNav();
     initPublishModal();
     window.addEventListener('resize', handleDynamicNav);
@@ -36,6 +37,41 @@ function updateThemeIcon(theme) {
     }
 }
 
+function initNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const section = item.getAttribute('data-nav');
+
+            // Quitar active de todos y poner en este
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+
+            if (section === 'home') {
+                renderFeed();
+            } else if (section === 'friends') {
+                renderFriendsSection();
+            } else if (section === 'settings') {
+                renderProfilePage('me');
+            } else {
+                // Otras secciones (placeholder)
+                document.getElementById('app').innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <h2>Sección ${section}</h2>
+                        <p>Próximamente en Dev...</p>
+                    </div>
+                `;
+            }
+        });
+    });
+
+    // Logo click va a Home
+    document.querySelector('.logo').onclick = () => {
+        const homeNav = document.querySelector('[data-nav="home"]');
+        if (homeNav) homeNav.click();
+    };
+}
+
 function initPublishModal() {
     const modal = document.getElementById('publish-modal');
     const btn = document.querySelector('.btn-add');
@@ -47,8 +83,10 @@ function initPublishModal() {
         modal.style.display = 'flex';
     }
 
-    span.onclick = () => {
-        modal.style.display = 'none';
+    if (span) {
+        span.onclick = () => {
+            modal.style.display = 'none';
+        }
     }
 
     window.onclick = (event) => {
@@ -58,9 +96,13 @@ function initPublishModal() {
     }
 
     textarea.oninput = () => {
+        const isPro = document.body.classList.contains('user-pro'); // Simulación
+        const maxLimit = isPro ? 1000 : 500;
+        textarea.setAttribute('maxlength', maxLimit);
+
         const len = textarea.value.length;
-        counter.innerText = `${len}/500`;
-        if (len >= 500) {
+        counter.innerText = `${len}/${maxLimit}`;
+        if (len >= maxLimit) {
             counter.style.color = 'red';
         } else {
             counter.style.color = 'var(--text-secondary)';
@@ -114,57 +156,6 @@ function initPublishModal() {
     }
 }
 
-function handleDynamicNav() {
-    const sidebar = document.getElementById('main-sidebar');
-    const items = Array.from(sidebar.querySelectorAll('.nav-item'));
-    const moreItem = sidebar.querySelector('[data-nav="more"]');
-
-    // Altura disponible en la ventana restando márgenes
-    const availableHeight = window.innerHeight - 100;
-    const itemHeight = 60; // 40px height + 20px gap
-
-    let currentHeight = 0;
-    let itemsToShow = [];
-    let itemsToHide = [];
-
-    // Siempre queremos mostrar "Inicio" y "Más"
-    items.forEach(item => {
-        const navType = item.getAttribute('data-nav');
-        if (navType === 'home' || navType === 'more') {
-            itemsToShow.push(item);
-            currentHeight += itemHeight;
-        }
-    });
-
-    items.forEach(item => {
-        const navType = item.getAttribute('data-nav');
-        if (navType !== 'home' && navType !== 'more') {
-            if (currentHeight + itemHeight <= availableHeight) {
-                itemsToShow.push(item);
-                currentHeight += itemHeight;
-            } else {
-                itemsToHide.push(item);
-            }
-        }
-    });
-
-    // Reordenar visualmente en el DOM (simplificado)
-    items.forEach(item => {
-        if (itemsToHide.includes(item)) {
-            item.style.display = 'none';
-        } else {
-            item.style.display = 'flex';
-        }
-    });
-
-    // Ocultar "Más" si no hay nada que esconder
-    if (itemsToHide.length === 0) {
-        moreItem.style.display = 'none';
-    } else {
-        moreItem.style.display = 'flex';
-    }
-}
-
 const mockPosts = [
     {
         id: 1,
@@ -179,7 +170,7 @@ const mockPosts = [
         user: 'SuperDev',
         time: '15m',
         content: '<span class="text-glow" style="color: #2ea043">¡Mira mi publicación con iluminación y animación de lluvia! Esto es nivel Super Desarrollador.</span>',
-        isAd: false,
+        isAd: true, // Marcado como ad para permitir HTML de estilo premium pre-renderizado
         extraClass: 'glow-green anim-rain'
     },
     {
@@ -201,22 +192,30 @@ const mockPosts = [
 ];
 
 function renderFeed() {
-    const feed = document.getElementById('feed');
+    let feed = document.getElementById('feed');
+    if (!feed) {
+        const app = document.getElementById('app');
+        if (app) app.innerHTML = '<div id="feed"></div>';
+        feed = document.getElementById('feed');
+    }
     if (!feed) return;
 
-    feed.innerHTML = mockPosts.map(post => `
+    feed.innerHTML = mockPosts.map(post => {
+        const safeContent = post.isAd ? post.content : parseYouTubeLinks(escapeHTML(post.content));
+
+        return `
         <div class="post ${post.isAd ? 'ad' : ''} ${post.extraClass || ''}">
             <div class="post-header">
                 <div class="user-avatar">
                     <i class="fas fa-user"></i>
                 </div>
                 <div class="user-info">
-                    <span class="username">${post.user} ${post.isAd ? '<span class="ad-badge">Anuncio</span>' : ''}</span>
-                    <span class="post-time">${post.time}</span>
+                    <span class="username">${escapeHTML(post.user)} ${post.isAd && post.user === 'Anuncio Pro' ? '<span class="ad-badge">Anuncio</span>' : ''}</span>
+                    <span class="post-time">${escapeHTML(post.time)}</span>
                 </div>
             </div>
             <div class="post-content">
-                ${post.content}
+                ${safeContent}
             </div>
             <div class="post-actions">
                 <div class="action-item"><i class="far fa-heart"></i> Me gusta</div>
@@ -224,5 +223,5 @@ function renderFeed() {
                 <div class="action-item"><i class="fas fa-share"></i> Compartir</div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
