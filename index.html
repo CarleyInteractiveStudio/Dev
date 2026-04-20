@@ -52,6 +52,20 @@
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
+                <div class="post-preview-container">
+                    <h4>Vista Previa</h4>
+                    <div id="post-preview" class="post">
+                        <div class="post-header">
+                            <div class="user-avatar"><i class="fas fa-user"></i></div>
+                            <div class="user-info">
+                                <span class="username">Tu Nombre</span>
+                                <span class="post-time">Ahora</span>
+                            </div>
+                        </div>
+                        <div class="post-content" id="preview-content">Tu mensaje aparecerá aquí...</div>
+                    </div>
+                </div>
+
                 <textarea id="post-text" placeholder="¿Qué estás pensando, desarrollador?" maxlength="500"></textarea>
                 <div class="char-counter">0/500</div>
 
@@ -66,25 +80,34 @@
                     <div class="option-group">
                         <h4>Animaciones y Estilo</h4>
                         <div class="animations-grid">
-                            <div class="option-item disabled" title="PRO: Animación Lluvia">
+                            <div class="option-item pro-option" data-effect="anim-rain" title="PRO: Animación Lluvia">
                                 <i class="fas fa-cloud-showers-heavy"></i> Lluvia <i class="fas fa-lock lock-icon"></i>
                             </div>
-                            <div class="option-item disabled" title="PRO: Animación Tristeza">
+                            <div class="option-item pro-option" data-effect="anim-sad" title="PRO: Animación Tristeza">
                                 <i class="fas fa-frown"></i> Tristeza <i class="fas fa-lock lock-icon"></i>
                             </div>
-                            <div class="option-item disabled" title="PRO: Animación Felicidad">
+                            <div class="option-item pro-option" data-effect="anim-happy" title="PRO: Animación Felicidad">
                                 <i class="fas fa-smile"></i> Felicidad <i class="fas fa-lock lock-icon"></i>
                             </div>
                         </div>
                     </div>
 
                     <div class="option-group">
-                        <h4>Iluminación y Burbuja</h4>
-                        <div class="option-item disabled" title="PRO: Iluminación de texto">
-                            <i class="fas fa-lightbulb"></i> Iluminación <i class="fas fa-lock lock-icon"></i>
+                        <h4>Iluminación y Color</h4>
+                        <div class="glow-options">
+                            <div class="glow-color pro-option" data-glow="glow-green" style="background: var(--accent-color)" title="Verde"></div>
+                            <div class="glow-color pro-option" data-glow="glow-blue" style="background: #0969da" title="Azul"></div>
+                            <div class="glow-color pro-option" data-glow="glow-purple" style="background: #a335ee" title="Púrpura"></div>
+                            <div class="glow-color pro-option" data-glow="glow-red" style="background: #d73a49" title="Rojo"></div>
+                            <div class="glow-color pro-option" data-glow="glow-cyan" style="background: cyan" title="Cian"></div>
+                            <div class="glow-color pro-option" data-glow="glow-gold" style="background: gold" title="Oro"></div>
                         </div>
-                        <div class="option-item disabled" title="PRO: Fondo de burbuja personalizado">
-                            <i class="fas fa-circle-dot"></i> Estilo de Burbuja <i class="fas fa-lock lock-icon"></i>
+                    </div>
+
+                    <div class="option-group">
+                        <h4>Estilo de Burbuja</h4>
+                        <div class="option-item pro-option" data-effect="custom-bg">
+                            <i class="fas fa-image"></i> Fondo Personalizado <i class="fas fa-lock lock-icon"></i>
                         </div>
                     </div>
                 </div>

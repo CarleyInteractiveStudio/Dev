@@ -65,6 +65,42 @@ function initPublishModal() {
         } else {
             counter.style.color = 'var(--text-secondary)';
         }
+        updatePreview();
+    }
+
+    // Interactividad de opciones PRO para vista previa
+    const proOptions = document.querySelectorAll('.pro-option');
+    const previewPost = document.getElementById('post-preview');
+
+    proOptions.forEach(opt => {
+        opt.onclick = () => {
+            const glow = opt.getAttribute('data-glow');
+            const effect = opt.getAttribute('data-effect');
+
+            if (glow) {
+                // Quitar otros glows
+                previewPost.classList.forEach(cls => {
+                    if (cls.startsWith('glow-')) previewPost.classList.remove(cls);
+                });
+                previewPost.classList.add(glow);
+
+                // Marcar seleccionado
+                document.querySelectorAll('.glow-color').forEach(c => c.classList.remove('selected'));
+                opt.classList.add('selected');
+            }
+
+            if (effect) {
+                previewPost.classList.toggle(effect);
+                opt.classList.toggle('selected-effect');
+                // Estilo visual para opción seleccionada
+                opt.style.borderColor = opt.classList.contains('selected-effect') ? 'var(--accent-color)' : 'var(--border-color)';
+            }
+        };
+    });
+
+    function updatePreview() {
+        const previewContent = document.getElementById('preview-content');
+        previewContent.innerText = textarea.value || 'Tu mensaje aparecerá aquí...';
     }
 
     const submitBtn = document.getElementById('submit-post');
@@ -121,8 +157,12 @@ function handleDynamicNav() {
         }
     });
 
-    // Si no hay items ocultos, podríamos ocultar el botón "Más"
-    // Pero según el usuario, "Más" es donde se guardan los otros, así que lo dejamos siempre visible
+    // Ocultar "Más" si no hay nada que esconder
+    if (itemsToHide.length === 0) {
+        moreItem.style.display = 'none';
+    } else {
+        moreItem.style.display = 'flex';
+    }
 }
 
 const mockPosts = [
