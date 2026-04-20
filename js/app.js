@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     renderFeed();
     handleDynamicNav();
+    initPublishModal();
     window.addEventListener('resize', handleDynamicNav);
 });
 
@@ -32,6 +33,48 @@ function updateThemeIcon(theme) {
         icon.className = 'fas fa-sun';
     } else {
         icon.className = 'fas fa-moon';
+    }
+}
+
+function initPublishModal() {
+    const modal = document.getElementById('publish-modal');
+    const btn = document.querySelector('.btn-add');
+    const span = document.querySelector('.close-modal');
+    const textarea = document.getElementById('post-text');
+    const counter = document.querySelector('.char-counter');
+
+    btn.onclick = () => {
+        modal.style.display = 'flex';
+    }
+
+    span.onclick = () => {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    textarea.oninput = () => {
+        const len = textarea.value.length;
+        counter.innerText = `${len}/500`;
+        if (len >= 500) {
+            counter.style.color = 'red';
+        } else {
+            counter.style.color = 'var(--text-secondary)';
+        }
+    }
+
+    const submitBtn = document.getElementById('submit-post');
+    submitBtn.onclick = () => {
+        if (textarea.value.trim() === '') return;
+
+        alert('¡Publicado! (Simulado para usuarios gratuitos)');
+        textarea.value = '';
+        counter.innerText = '0/500';
+        modal.style.display = 'none';
     }
 }
 
@@ -88,21 +131,32 @@ const mockPosts = [
         user: 'JulesCoder',
         time: '5m',
         content: '¡Bienvenidos a Dev! Estamos construyendo la mejor red social para desarrolladores. HTML, CSS y JS puro para empezar. #Dev #Coding',
-        isAd: false
+        isAd: false,
+        extraClass: ''
+    },
+    {
+        id: 4,
+        user: 'SuperDev',
+        time: '15m',
+        content: '<span class="text-glow" style="color: #2ea043">¡Mira mi publicación con iluminación y animación de lluvia! Esto es nivel Super Desarrollador.</span>',
+        isAd: false,
+        extraClass: 'glow-green anim-rain'
     },
     {
         id: 2,
         user: 'Anuncio Pro',
         time: 'Publicidad',
         content: 'Aprende Supabase en tiempo récord y construye apps increíbles como esta.',
-        isAd: true
+        isAd: true,
+        extraClass: ''
     },
     {
         id: 3,
         user: 'DevMaster',
         time: '2h',
-        content: '¿Alguien ha probado ya el nuevo motor App Craft? Me parece que va a revolucionar el desarrollo de apps nativas.',
-        isAd: false
+        content: 'Esta es una publicación muy larga que debería mostrar el efecto de plegado estilo Threads para que no ocupe demasiado espacio en el feed de los usuarios y se vea más profesional. ' + 'Lorem ipsum '.repeat(20),
+        isAd: false,
+        extraClass: 'folded'
     }
 ];
 
@@ -111,7 +165,7 @@ function renderFeed() {
     if (!feed) return;
 
     feed.innerHTML = mockPosts.map(post => `
-        <div class="post ${post.isAd ? 'ad' : ''}">
+        <div class="post ${post.isAd ? 'ad' : ''} ${post.extraClass || ''}">
             <div class="post-header">
                 <div class="user-avatar">
                     <i class="fas fa-user"></i>

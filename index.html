@@ -44,6 +44,57 @@
         <div id="feed"></div>
     </main>
 
+    <!-- Modal para Publicar -->
+    <div id="publish-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Publicación</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <textarea id="post-text" placeholder="¿Qué estás pensando, desarrollador?" maxlength="500"></textarea>
+                <div class="char-counter">0/500</div>
+
+                <div class="post-options">
+                    <div class="option-group">
+                        <h4>Multimedia</h4>
+                        <div class="option-item disabled" title="Mejora a PRO para subir fotos">
+                            <i class="fas fa-image"></i> Fotos <i class="fas fa-lock lock-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h4>Animaciones y Estilo</h4>
+                        <div class="animations-grid">
+                            <div class="option-item disabled" title="PRO: Animación Lluvia">
+                                <i class="fas fa-cloud-showers-heavy"></i> Lluvia <i class="fas fa-lock lock-icon"></i>
+                            </div>
+                            <div class="option-item disabled" title="PRO: Animación Tristeza">
+                                <i class="fas fa-frown"></i> Tristeza <i class="fas fa-lock lock-icon"></i>
+                            </div>
+                            <div class="option-item disabled" title="PRO: Animación Felicidad">
+                                <i class="fas fa-smile"></i> Felicidad <i class="fas fa-lock lock-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h4>Iluminación y Burbuja</h4>
+                        <div class="option-item disabled" title="PRO: Iluminación de texto">
+                            <i class="fas fa-lightbulb"></i> Iluminación <i class="fas fa-lock lock-icon"></i>
+                        </div>
+                        <div class="option-item disabled" title="PRO: Fondo de burbuja personalizado">
+                            <i class="fas fa-circle-dot"></i> Estilo de Burbuja <i class="fas fa-lock lock-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="submit-post" class="btn-primary">Publicar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/app.js"></script>
 </body>
 </html>
