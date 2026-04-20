@@ -1,7 +1,7 @@
 function renderProfilePage(userId, activeTab = 'posts') {
     const app = document.getElementById('app');
 
-    // Mock data del perfil (En una app real, esto vendría de una API)
+    // Mock data del perfil
     const user = {
         id: userId,
         name: userId === 'me' ? 'Mi Perfil' : 'AliceDev',
@@ -29,8 +29,10 @@ function renderProfilePage(userId, activeTab = 'posts') {
             <header class="profile-header">
                 <div class="profile-cover"></div>
                 <div class="profile-info-main">
-                    <div class="profile-avatar-large">
-                        <i class="fas fa-user"></i>
+                    <div class="avatar-frame" style="width:150px; height:150px; border: 5px solid var(--card-bg); margin-bottom: 0;">
+                        <div class="avatar-inner" style="font-size: 5rem;">
+                            <i class="fas fa-user"></i>
+                        </div>
                     </div>
                     <div class="profile-names">
                         <h2>${escapeHTML(user.name)} ${user.isPro ? '<i class="fas fa-check-circle pro-badge" title="Usuario PRO"></i>' : ''}</h2>
@@ -128,13 +130,12 @@ function renderTabContent(user, tab) {
 
     if (tab === 'cv') {
         // Usar un iframe con sandbox para renderizar el HTML del currículum de forma segura
-        const blob = new Blob([user.cvHtml], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-
+        // Nota: No usamos escapeHTML aquí para permitir que el HTML se renderice,
+        // pero el sandbox protege la aplicación principal.
         return `
             <div class="cv-viewer">
                 <iframe
-                    srcdoc="${escapeHTML(user.cvHtml)}"
+                    srcdoc="${user.cvHtml.replace(/"/g, '&quot;')}"
                     sandbox="allow-scripts"
                     style="width:100%; height:600px; border:none; background:white; border-radius:8px;">
                 </iframe>
@@ -173,18 +174,6 @@ style.textContent = `
         align-items: flex-end;
         gap: 20px;
         margin-top: -60px;
-    }
-    .profile-avatar-large {
-        width: 150px;
-        height: 150px;
-        background: var(--bg-primary);
-        border-radius: 50%;
-        border: 5px solid var(--card-bg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-        color: var(--text-secondary);
     }
     .profile-names {
         flex: 1;

@@ -51,6 +51,8 @@ function initNavigation() {
                 renderFeed();
             } else if (section === 'friends') {
                 renderFriendsSection();
+            } else if (section === 'notifications') {
+                renderChatSection();
             } else if (section === 'settings') {
                 renderProfilePage('me');
             } else {
