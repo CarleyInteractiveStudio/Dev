@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initTheme();
     renderFeed();
+    handleDynamicNav();
+    window.addEventListener('resize', handleDynamicNav);
 });
 
 function initTheme() {
@@ -31,6 +33,53 @@ function updateThemeIcon(theme) {
     } else {
         icon.className = 'fas fa-moon';
     }
+}
+
+function handleDynamicNav() {
+    const sidebar = document.getElementById('main-sidebar');
+    const items = Array.from(sidebar.querySelectorAll('.nav-item'));
+    const moreItem = sidebar.querySelector('[data-nav="more"]');
+
+    // Altura disponible en la ventana restando márgenes
+    const availableHeight = window.innerHeight - 100;
+    const itemHeight = 60; // 40px height + 20px gap
+
+    let currentHeight = 0;
+    let itemsToShow = [];
+    let itemsToHide = [];
+
+    // Siempre queremos mostrar "Inicio" y "Más"
+    items.forEach(item => {
+        const navType = item.getAttribute('data-nav');
+        if (navType === 'home' || navType === 'more') {
+            itemsToShow.push(item);
+            currentHeight += itemHeight;
+        }
+    });
+
+    items.forEach(item => {
+        const navType = item.getAttribute('data-nav');
+        if (navType !== 'home' && navType !== 'more') {
+            if (currentHeight + itemHeight <= availableHeight) {
+                itemsToShow.push(item);
+                currentHeight += itemHeight;
+            } else {
+                itemsToHide.push(item);
+            }
+        }
+    });
+
+    // Reordenar visualmente en el DOM (simplificado)
+    items.forEach(item => {
+        if (itemsToHide.includes(item)) {
+            item.style.display = 'none';
+        } else {
+            item.style.display = 'flex';
+        }
+    });
+
+    // Si no hay items ocultos, podríamos ocultar el botón "Más"
+    // Pero según el usuario, "Más" es donde se guardan los otros, así que lo dejamos siempre visible
 }
 
 const mockPosts = [

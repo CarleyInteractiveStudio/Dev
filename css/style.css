@@ -132,7 +132,7 @@ main {
     margin-top: 80px;
     margin-left: 100px;
     padding: 20px;
-    max-width: 600px;
+    max-width: calc(100% - 140px); /* Ocupa todo el espacio disponible restando la barra lateral */
 }
 
 /* Post Styling */
