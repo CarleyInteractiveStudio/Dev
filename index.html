@@ -131,12 +131,21 @@
                     <button class="btn-card secondary">Cambiar Foto</button>
                 </div>
                 <div class="form-group">
+                    <label>Integración Técnica</label>
+                    <button class="btn-card secondary" id="github-connect-btn" onclick="devAuth.loginWithGitHub()" style="width:100%; justify-content:center;">
+                        <i class="fab fa-github"></i> Conectar con GitHub
+                    </button>
+                </div>
+                <div class="form-group">
                     <label>Nombre de Usuario</label>
                     <input type="text" value="mi_usuario">
                 </div>
                 <div class="form-group">
-                    <label>Fecha de Nacimiento</label>
-                    <input type="date">
+                    <label>Información Privada (Solo tú puedes verla)</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="date" title="Fecha de Nacimiento" placeholder="Nacimiento">
+                        <input type="tel" placeholder="Número de Teléfono">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Sexo</label>
@@ -147,18 +156,25 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Área de Experiencia</label>
-                    <select id="experience-select">
-                        <option>Animación</option>
-                        <option>Desarrollador Web</option>
-                        <option>Desarrollo de Juego Web</option>
-                        <option>Desarrollo de App Nativas</option>
-                        <option>Desarrollo de Juego Nativas</option>
-                    </select>
+                    <label>Enlaces Profesionales</label>
+                    <input type="url" placeholder="Canal de YouTube" style="margin-bottom:5px;">
+                    <input type="url" placeholder="Sitio Web Personal">
+                </div>
+                <div class="form-group">
+                    <label>Años de Experiencia</label>
+                    <input type="number" min="0" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Categorías (Selecciona múltiples, doble clic para marcar Principal)</label>
+                    <div id="categories-selector" class="tools-list" style="margin-top:5px;"></div>
                 </div>
                 <div class="form-group">
                     <label>Motores de App / Videojuegos</label>
                     <input type="text" placeholder="Unity, Godot, App Craft, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Historial Laboral / Empresa Actual</label>
+                    <div id="company-management-area"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -170,11 +186,14 @@
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/companies.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/nav_logic.js"></script>
     <script src="js/friends.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/chat.js"></script>
+    <script src="js/settings.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

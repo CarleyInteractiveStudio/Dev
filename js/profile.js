@@ -1,7 +1,7 @@
 function renderProfilePage(userId, activeTab = 'posts') {
     const app = document.getElementById('app');
 
-    // Mock data del perfil
+    // Mock data extendida
     const user = {
         id: userId,
         name: userId === 'me' ? 'Mi Perfil' : 'AliceDev',
@@ -9,11 +9,18 @@ function renderProfilePage(userId, activeTab = 'posts') {
         avatar: null,
         birthday: '1995-05-15',
         gender: 'Femenino',
-        experience: 'Desarrollador Web',
-        tools: ['App Craft', 'VS Code', 'React', 'Supabase'],
+        experience_years: 8,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 45), // hace 45 días
+        categories: [
+            { name: 'Desarrollador Web', main: true },
+            { name: 'Desarrollo de Juego Nativa', main: false }
+        ],
+        tools: ['App Craft', 'VS Code', 'React', 'Supabase', 'Unity'],
         stats: { projects: 2, apps: 1 },
         isPro: true,
-        isSuper: false,
+        youtube: 'https://youtube.com/@AliceCoder',
+        website: 'https://alice.dev',
+        phone: '+1 234 567 890',
         cvHtml: '<h1>Mi Currículum</h1><p>Experiencia en desarrollo web fullstack...</p>',
         projects: [
             { id: 1, title: 'Dev Network', description: 'Red social para devs', tech: 'JS Puro', collaborators: 3 },
@@ -23,6 +30,8 @@ function renderProfilePage(userId, activeTab = 'posts') {
             { id: 1, title: 'App de Clima', description: 'Consulta el clima en tiempo real', type: 'Web App' }
         ]
     };
+
+    const daysSinceCreation = Math.floor((Date.now() - user.createdAt) / (1000 * 60 * 60 * 24));
 
     app.innerHTML = `
         <div class="profile-container">
@@ -37,6 +46,9 @@ function renderProfilePage(userId, activeTab = 'posts') {
                     <div class="profile-names">
                         <h2>${escapeHTML(user.name)} ${user.isPro ? '<i class="fas fa-check-circle pro-badge" title="Usuario PRO"></i>' : ''}</h2>
                         <span>@${escapeHTML(user.username)}</span>
+                        <div style="margin-top: 5px; font-size: 0.85rem; color: var(--text-secondary);">
+                            <i class="fas fa-calendar-alt"></i> Cuenta creada hace ${daysSinceCreation} días
+                        </div>
                     </div>
                     <div class="profile-actions-top">
                         ${userId === 'me' ? '<button class="btn-primary" onclick="openEditProfileModal()">Editar Perfil</button>' : '<button class="btn-primary">Seguir</button>'}
@@ -48,9 +60,23 @@ function renderProfilePage(userId, activeTab = 'posts') {
                 <aside class="profile-sidebar">
                     <div class="profile-card">
                         <h3>Sobre mí</h3>
-                        <p><i class="fas fa-birthday-cake"></i> <strong>Cumpleaños:</strong> ${escapeHTML(user.birthday)}</p>
+                        <p><i class="fas fa-birthday-cake"></i> <strong>Nacimiento:</strong> ${escapeHTML(user.birthday)} ${userId === 'me' ? '<span class="private-info">Privado</span>' : ''}</p>
                         <p><i class="fas fa-venus-mars"></i> <strong>Sexo:</strong> ${escapeHTML(user.gender)}</p>
-                        <p><i class="fas fa-code"></i> <strong>Área:</strong> ${escapeHTML(user.experience)}</p>
+                        <p><i class="fas fa-briefcase"></i> <strong>Experiencia:</strong> ${user.experience_years} años</p>
+                        ${userId === 'me' ? `<p><i class="fas fa-phone"></i> <strong>Teléfono:</strong> ${escapeHTML(user.phone)} <span class="private-info">Privado</span></p>` : ''}
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Contacto y Enlaces</h3>
+                        <a href="${user.youtube}" target="_blank" class="profile-link"><i class="fab fa-youtube"></i> YouTube</a>
+                        <a href="${user.website}" target="_blank" class="profile-link" style="margin-top:10px;"><i class="fas fa-globe"></i> Sitio Web</a>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Categorías</h3>
+                        <div class="tools-list">
+                            ${user.categories.map(c => `<span class="category-tag ${c.main ? 'main' : ''}">${escapeHTML(c.name)} ${c.main ? '<i class="fas fa-star" style="font-size:0.7rem"></i>' : ''}</span>`).join('')}
+                        </div>
                     </div>
 
                     <div class="profile-card">
@@ -129,9 +155,6 @@ function renderTabContent(user, tab) {
     }
 
     if (tab === 'cv') {
-        // Usar un iframe con sandbox para renderizar el HTML del currículum de forma segura
-        // Nota: No usamos escapeHTML aquí para permitir que el HTML se renderice,
-        // pero el sandbox protege la aplicación principal.
         return `
             <div class="cv-viewer">
                 <iframe
@@ -146,6 +169,38 @@ function renderTabContent(user, tab) {
 
 function openEditProfileModal() {
     document.getElementById('edit-profile-modal').style.display = 'flex';
+    if (window.devCompanies) {
+        devCompanies.renderCompanySearch();
+    }
+    renderCategoriesSelector();
+}
+
+function renderCategoriesSelector() {
+    const categories = [
+        'Animación', 'Desarrollador Web', 'Desarrollo de Juego Web',
+        'Desarrollo de App Nativas', 'Desarrollo de Juego Nativas',
+        'Ingeniería de Datos', 'Inteligencia Artificial', 'Ciberseguridad'
+    ];
+    const container = document.getElementById('categories-selector');
+    if (!container) return;
+
+    container.innerHTML = categories.map(cat => `
+        <span class="category-tag" onclick="toggleCategory(this)" ondblclick="setMainCategory(this)">${cat}</span>
+    `).join('');
+}
+
+function toggleCategory(el) {
+    el.classList.toggle('selected');
+}
+
+function setMainCategory(el) {
+    document.querySelectorAll('.category-tag').forEach(c => {
+        c.classList.remove('main');
+        c.innerHTML = c.innerText; // Limpiar estrella
+    });
+    el.classList.add('selected');
+    el.classList.add('main');
+    el.innerHTML += ' <i class="fas fa-star" style="font-size:0.7rem"></i>';
 }
 
 // Estilos para el perfil
@@ -271,3 +326,9 @@ style.textContent = `
 document.head.appendChild(style);
 
 window.renderProfilePage = renderProfilePage;
+
+function handleJobApplication(userId) {
+    if (confirm('¿Deseas enviar tu currículum y datos de contacto (incluyendo teléfono) a este empleador?')) {
+        alert('Solicitud enviada. Ahora el empleador puede ver tu teléfono y contactarte por chat.');
+    }
+}

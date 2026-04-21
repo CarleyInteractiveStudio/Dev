@@ -54,7 +54,7 @@ function initNavigation() {
             } else if (section === 'notifications') {
                 renderChatSection();
             } else if (section === 'settings') {
-                renderProfilePage('me');
+                renderSettingsSection();
             } else {
                 // Otras secciones (placeholder)
                 document.getElementById('app').innerHTML = `
