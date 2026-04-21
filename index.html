@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev | Red Social para Desarrolladores</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">Dev</div>
+        <div class="header-actions">
+            <button id="theme-toggle" class="btn-icon" title="Cambiar Tema"><i class="fas fa-moon"></i></button>
+            <button class="btn-add" title="Publicar"><i class="fas fa-plus"></i></button>
+        </div>
+    </header>
+
+    <nav class="sidebar" id="main-sidebar">
+        <div class="nav-item active" title="Inicio" data-nav="home">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="nav-item" title="Grupos" data-nav="groups">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="nav-item" title="Amigos" data-nav="friends">
+            <i class="fas fa-user-friends"></i>
+        </div>
+        <div class="nav-item" title="Notificaciones" data-nav="notifications">
+            <i class="fas fa-bell"></i>
+        </div>
+        <div class="nav-item" title="Más" data-nav="more">
+            <i class="fas fa-ellipsis-h"></i>
+        </div>
+        <div class="nav-item" title="Configuración" data-nav="settings">
+            <i class="fas fa-cog"></i>
+        </div>
+    </nav>
+
+    <main id="app">
+        <!-- Las publicaciones se cargarán aquí -->
+        <div id="feed"></div>
+    </main>
+
+    <!-- Modales -->
+    <div id="publish-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Publicación</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="post-preview-container">
+                    <h4>Vista Previa</h4>
+                    <div id="post-preview" class="post">
+                        <div class="post-header">
+                            <div class="user-avatar"><i class="fas fa-user"></i></div>
+                            <div class="user-info">
+                                <span class="username">Tu Nombre</span>
+                                <span class="post-time">Ahora</span>
+                            </div>
+                        </div>
+                        <div class="post-content" id="preview-content">Tu mensaje aparecerá aquí...</div>
+                    </div>
+                </div>
+
+                <textarea id="post-text" placeholder="¿Qué estás pensando, desarrollador?" maxlength="500"></textarea>
+                <div class="char-counter">0/500</div>
+
+                <div class="post-options">
+                    <div class="option-group">
+                        <h4>Multimedia</h4>
+                        <div class="option-item disabled" title="Mejora a PRO para subir fotos">
+                            <i class="fas fa-image"></i> Fotos <i class="fas fa-lock lock-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h4>Animaciones y Estilo</h4>
+                        <div class="animations-grid">
+                            <div class="option-item pro-option" data-effect="anim-rain" title="PRO: Animación Lluvia">
+                                <i class="fas fa-cloud-showers-heavy"></i> Lluvia <i class="fas fa-lock lock-icon"></i>
+                            </div>
+                            <div class="option-item pro-option" data-effect="anim-sad" title="PRO: Animación Tristeza">
+                                <i class="fas fa-frown"></i> Tristeza <i class="fas fa-lock lock-icon"></i>
+                            </div>
+                            <div class="option-item pro-option" data-effect="anim-happy" title="PRO: Animación Felicidad">
+                                <i class="fas fa-smile"></i> Felicidad <i class="fas fa-lock lock-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h4>Iluminación y Color</h4>
+                        <div class="glow-options">
+                            <div class="glow-color pro-option" data-glow="glow-green" style="background: var(--accent-color)" title="Verde"></div>
+                            <div class="glow-color pro-option" data-glow="glow-blue" style="background: #0969da" title="Azul"></div>
+                            <div class="glow-color pro-option" data-glow="glow-purple" style="background: #a335ee" title="Púrpura"></div>
+                            <div class="glow-color pro-option" data-glow="glow-red" style="background: #d73a49" title="Rojo"></div>
+                            <div class="glow-color pro-option" data-glow="glow-cyan" style="background: cyan" title="Cian"></div>
+                            <div class="glow-color pro-option" data-glow="glow-gold" style="background: gold" title="Oro"></div>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h4>Estilo de Burbuja</h4>
+                        <div class="option-item pro-option" data-effect="custom-bg">
+                            <i class="fas fa-image"></i> Fondo Personalizado <i class="fas fa-lock lock-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="submit-post" class="btn-primary">Publicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edición de Perfil -->
+    <div id="edit-profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Perfil</h3>
+                <span class="close-modal" onclick="document.getElementById('edit-profile-modal').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="avatar-edit">
+                    <div class="avatar-preview-edit"><i class="fas fa-user"></i></div>
+                    <button class="btn-card secondary">Cambiar Foto</button>
+                </div>
+                <div class="form-group">
+                    <label>Integración Técnica</label>
+                    <button class="btn-card secondary" id="github-connect-btn" onclick="devAuth.loginWithGitHub()" style="width:100%; justify-content:center;">
+                        <i class="fab fa-github"></i> Conectar con GitHub
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de Usuario</label>
+                    <input type="text" value="mi_usuario">
+                </div>
+                <div class="form-group">
+                    <label>Información Privada (Solo tú puedes verla)</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="date" title="Fecha de Nacimiento" placeholder="Nacimiento">
+                        <input type="tel" placeholder="Número de Teléfono">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Sexo</label>
+                    <select>
+                        <option>Masculino</option>
+                        <option>Femenino</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Enlaces Profesionales</label>
+                    <input type="url" placeholder="Canal de YouTube" style="margin-bottom:5px;">
+                    <input type="url" placeholder="Sitio Web Personal">
+                </div>
+                <div class="form-group">
+                    <label>Años de Experiencia</label>
+                    <input type="number" min="0" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Categorías (Selecciona múltiples, doble clic para marcar Principal)</label>
+                    <div id="categories-selector" class="tools-list" style="margin-top:5px;"></div>
+                </div>
+                <div class="form-group">
+                    <label>Motores de App / Videojuegos</label>
+                    <input type="text" placeholder="Unity, Godot, App Craft, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Historial Laboral / Empresa Actual</label>
+                    <div id="company-management-area"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="document.getElementById('edit-profile-modal').style.display='none'">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/companies.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/nav_logic.js"></script>
+    <script src="js/friends.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
